@@ -1,0 +1,27 @@
+{
+  "name": "bondexos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "BondexOS MVP enterprise para automatizacion de fianzas con IA.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,web \"npm:dev -w @bondexos/api\" \"npm:dev -w @bondexos/web\"",
+    "build": "npm run build -w @bondexos/shared && npm run build -w @bondexos/integrations && npm run build -w @bondexos/api && npm run build -w @bondexos/workers && npm run build -w @bondexos/web",
+    "typecheck": "npm run build -w @bondexos/shared && npm run build -w @bondexos/integrations && npm run typecheck -w @bondexos/api && npm run typecheck -w @bondexos/workers && npm run typecheck -w @bondexos/web",
+    "lint": "eslint . --max-warnings=0",
+    "test": "npm run test -w @bondexos/api"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "concurrently": "^9.1.0",
+    "eslint": "^9.17.0",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  }
+}
