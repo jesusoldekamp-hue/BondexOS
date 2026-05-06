@@ -8,6 +8,7 @@ import { authRouter } from "./routes/auth.js";
 import { expedientesRouter } from "./routes/expedientes.js";
 import { healthRouter } from "./routes/health.js";
 import { originadoresRouter } from "./routes/originadores.js";
+import { suscripcionRouter } from "./routes/suscripcion.js";
 import { createSupabaseServices } from "./services/supabaseServices.js";
 import type { AppServices } from "./services/types.js";
 import { errorHandler, notFoundHandler } from "./middleware/errors.js";
@@ -39,6 +40,7 @@ export function createApp(options: CreateAppOptions = {}) {
   app.use("/api/v1/originadores", originadoresRouter);
   app.use("/api/v1/expedientes", expedientesRouter);
   app.use("/api/v1/ai", aiRouter);
+  app.use("/api/v1/suscripcion", suscripcionRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

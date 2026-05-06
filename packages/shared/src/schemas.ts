@@ -207,6 +207,43 @@ export const MemoSuscripcionOutputSchema = z.object({
   requiereRevision: z.boolean()
 });
 
+export const ScoringRequestSchema = z.object({
+  expedienteId: z.string().uuid()
+});
+
+export const DecisionRequestSchema = z
+  .object({
+    decision: DecisionSuscripcionSchema,
+    condiciones: z.string().trim().min(3).max(2000).optional(),
+    motivoRechazo: z.string().trim().min(3).max(2000).optional(),
+    montoAprobado: z.coerce.number().positive().max(999_999_999_999).optional()
+  })
+  .superRefine((value, ctx) => {
+    if (value.decision === "aprobado_con_condiciones" && !value.condiciones) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["condiciones"],
+        message: "Las condiciones son obligatorias para aprobacion condicionada."
+      });
+    }
+
+    if (value.decision === "rechazado" && !value.motivoRechazo) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["motivoRechazo"],
+        message: "El motivo es obligatorio al rechazar."
+      });
+    }
+
+    if (value.decision === "pendiente" && !value.motivoRechazo) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["motivoRechazo"],
+        message: "El motivo es obligatorio al marcar como pendiente."
+      });
+    }
+  });
+
 export type InvitationRequest = z.infer<typeof InvitationRequestSchema>;
 export type AuthenticatedUser = z.infer<typeof AuthenticatedUserSchema>;
 export type Tenant = z.infer<typeof TenantSchema>;
@@ -221,3 +258,6 @@ export type DocumentoExtraccionOutput = z.infer<typeof DocumentoExtraccionOutput
 export type ValidacionCoherenciaOutput = z.infer<typeof ValidacionCoherenciaOutputSchema>;
 export type AnalisisFinancieroOutput = z.infer<typeof AnalisisFinancieroOutputSchema>;
 export type MemoSuscripcionOutput = z.infer<typeof MemoSuscripcionOutputSchema>;
+export type ScoringRequest = z.infer<typeof ScoringRequestSchema>;
+export type DecisionRequest = z.infer<typeof DecisionRequestSchema>;
+

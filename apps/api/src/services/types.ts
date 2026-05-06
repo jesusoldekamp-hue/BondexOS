@@ -4,6 +4,8 @@ import type {
   AiJobType,
   BrokerGuardVerification,
   CedulaEstado,
+  DecisionRequest,
+  DecisionSuscripcion,
   DocumentoEstado,
   DocumentoStatusUpdateRequest,
   DocumentoUploadUrlRequest,
@@ -11,6 +13,8 @@ import type {
   ExpedienteEstado,
   InvitationRequest,
   PfRutaCapacidad,
+  Recomendacion,
+  ScoringResult,
   TipoFianza,
   TipoOriginador,
   TipoSolicitante,
@@ -173,6 +177,35 @@ export interface EnqueueAiJobInput extends AiJobRequest {
   createdBy: string;
 }
 
+export interface DecisionContext {
+  id: string;
+  tenantId: string;
+  expedienteId: string;
+  suscriptorId: string;
+  decision: DecisionSuscripcion;
+  condiciones: string | null;
+  motivoRechazo: string | null;
+  timestamp: string;
+}
+
+export interface AnalisisFinancieroContext {
+  id: string;
+  tenantId: string;
+  expedienteId: string;
+  tipoAnalisis: string;
+  ratiosJson: Record<string, unknown>;
+  score: number | null;
+  recomendacion: Recomendacion | null;
+  memoTexto: string | null;
+  generadoPorIa: boolean;
+}
+
+export interface CreateDecisionInput extends DecisionRequest {
+  tenantId: string;
+  expedienteId: string;
+  suscriptorId: string;
+}
+
 export interface AppServices {
   validateToken(accessToken: string): Promise<AuthUser | null>;
   getUsuarioByAuthUserId(authUserId: string): Promise<UsuarioContext | null>;
@@ -192,4 +225,11 @@ export interface AppServices {
   enqueueAiJob(input: EnqueueAiJobInput): Promise<AiJobContext>;
   listAiJobsByExpediente(tenantId: string, expedienteId: string): Promise<AiJobContext[]>;
   recordAudit(input: AuditRecordInput): Promise<void>;
+  // M5 — Scoring
+  calculateScore(tenantId: string, expedienteId: string): Promise<ScoringResult>;
+  getScore(tenantId: string, expedienteId: string): Promise<AnalisisFinancieroContext | null>;
+  // M6 — Decisiones
+  listExpedientesForSuscripcion(tenantId: string): Promise<ExpedienteContext[]>;
+  createDecision(input: CreateDecisionInput): Promise<DecisionContext>;
+  getDecisionsByExpediente(tenantId: string, expedienteId: string): Promise<DecisionContext[]>;
 }
