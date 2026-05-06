@@ -8,6 +8,7 @@ import { authRouter } from "./routes/auth.js";
 import { expedientesRouter } from "./routes/expedientes.js";
 import { healthRouter } from "./routes/health.js";
 import { originadoresRouter } from "./routes/originadores.js";
+import { polizasRouter } from "./routes/polizas.js";
 import { suscripcionRouter } from "./routes/suscripcion.js";
 import { createSupabaseServices } from "./services/supabaseServices.js";
 import type { AppServices } from "./services/types.js";
@@ -41,6 +42,7 @@ export function createApp(options: CreateAppOptions = {}) {
   app.use("/api/v1/expedientes", expedientesRouter);
   app.use("/api/v1/ai", aiRouter);
   app.use("/api/v1/suscripcion", suscripcionRouter);
+  app.use("/api/v1/polizas", polizasRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

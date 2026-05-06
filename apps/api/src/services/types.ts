@@ -206,6 +206,32 @@ export interface CreateDecisionInput extends DecisionRequest {
   suscriptorId: string;
 }
 
+export type EmisionEstado = "pendiente" | "procesando" | "emitida" | "error";
+
+export interface PolizaContext {
+  id: string;
+  tenantId: string;
+  expedienteId: string;
+  numeroPoliza: string;
+  monto: number;
+  prima: number;
+  fechaInicio: string;
+  fechaVencimiento: string;
+  estado: EmisionEstado;
+  pdfR2Key: string | null;
+  pdfR2Url: string | null;
+  cfdiUuid: string | null;
+  cfdiXml: string | null;
+  createdAt: string;
+}
+
+export interface EmitirPolizaInput {
+  tenantId: string;
+  expedienteId: string;
+  decision: string;
+  condiciones: string | null;
+}
+
 export interface AppServices {
   validateToken(accessToken: string): Promise<AuthUser | null>;
   getUsuarioByAuthUserId(authUserId: string): Promise<UsuarioContext | null>;
@@ -232,4 +258,10 @@ export interface AppServices {
   listExpedientesForSuscripcion(tenantId: string): Promise<ExpedienteContext[]>;
   createDecision(input: CreateDecisionInput): Promise<DecisionContext>;
   getDecisionsByExpediente(tenantId: string, expedienteId: string): Promise<DecisionContext[]>;
+  // M7 — Pólizas
+  listPolizasByTenant(tenantId: string): Promise<PolizaContext[]>;
+  getPolizaById(tenantId: string, polizaId: string): Promise<PolizaContext | null>;
+  getPolizaByExpedienteId(tenantId: string, expedienteId: string): Promise<PolizaContext | null>;
+  emitirPoliza(input: EmitirPolizaInput): Promise<PolizaContext>;
 }
+

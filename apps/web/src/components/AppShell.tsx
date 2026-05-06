@@ -21,6 +21,9 @@ export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) 
             <Link className="hover:text-bondexos-accent" href="/suscriptor">
               Suscriptor
             </Link>
+            <Link className="hover:text-bondexos-accent" href="/polizas">
+              Pólizas
+            </Link>
           </nav>
         </div>
       </header>
